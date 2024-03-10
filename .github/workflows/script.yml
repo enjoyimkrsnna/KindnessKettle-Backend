@@ -29,13 +29,22 @@ jobs:
           cd "${{ github.workspace }}"  # Use the repository root as the project directory
           mvn clean package
 
+      - name: Upload JAR as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bddAtcProject-0.0.1-SNAPSHOT
+          path: target/bddAtcProject-0.0.1-SNAPSHOT.jar
+
   deploy_and_run:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug - List Files in Source Directory
-        run: ls -l "${{ github.workspace }}/target"
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: bddAtcProject-0.0.1-SNAPSHOT
+          path: target
 
       - name: Remove previous JAR on EC2
         uses: appleboy/ssh-action@master
@@ -47,16 +56,6 @@ jobs:
             cd /home/ec2-user/
             rm -f bddAtcProject-0.0.1-SNAPSHOT.jar
 
-      - name: Debug - List files on EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/ec2-user/
-            ls -l
-
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@master
         with:
@@ -65,16 +64,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           source: 'target/bddAtcProject-0.0.1-SNAPSHOT.jar'
           target: '/home/ec2-user/'
-
-      - name: Debug - List files on EC2 after copy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/ec2-user/
-            ls -l
 
       - name: Check JAR file on EC2
         run: |
