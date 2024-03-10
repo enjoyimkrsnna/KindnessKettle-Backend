@@ -29,7 +29,11 @@ jobs:
           cd "${{ github.workspace }}"  # Use the repository root as the project directory
           mvn clean package
 
+      - name: Debug - List files in target directory
+        run: ls -l target
+
       - name: Upload JAR as artifact
+        if: success()
         uses: actions/upload-artifact@v2
         with:
           name: bddAtcProject-0.0.1-SNAPSHOT
@@ -45,6 +49,9 @@ jobs:
         with:
           name: bddAtcProject-0.0.1-SNAPSHOT
           path: target
+
+      - name: Debug - List files in target directory on runner
+        run: ls -l target
 
       - name: Remove previous JAR on EC2
         uses: appleboy/ssh-action@master
