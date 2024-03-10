@@ -29,7 +29,8 @@ public class Controller {
     @GetMapping("/home")
     public ResponseEntity<String> home() {
         System.out.println("Welcome to kindnessKettle");
-        return ResponseEntity.ok("Welcome to kindnessKettle");
+        return ResponseEntity.ok("Welcome to Kindness Kettle! 🌟 Meet our amazing team:\n\n- Krishna Singh\n- Ajay Singh\n- Nisha Jain\n\nWe're here to make your experience delightful. Feel free to explore and share kindness with our community. If you have any questions, reach out to us. Cheers to a journey filled with positivity and warmth! 🚀");
+
     }
 
 
