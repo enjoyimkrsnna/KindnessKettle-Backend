@@ -29,7 +29,16 @@ public class Controller {
     @GetMapping("/home")
     public ResponseEntity<String> home() {
         System.out.println("Welcome to kindnessKettle");
-        return ResponseEntity.ok("Welcome to Kindness Kettle! 🌟 Meet our amazing team:\n\n- Krishna Singh\n- Ajay Singh\n- Nisha Jain\n\nWe're here to make your experience delightful. Feel free to explore and share kindness with our community. If you have any questions, reach out to us. Cheers to a journey filled with positivity and warmth! 🚀");
+        return ResponseEntity.ok("<html><body style='background-color: #f4f4f4; color: #333; font-family: Arial, sans-serif;'>" +
+                "<h1 style='color: #4285f4;'>Welcome to Kindness Kettle! 🌟</h1>" +
+                "<p>Meet our amazing team:</p>" +
+                "<ul>" +
+                "<li>Krishna Singh</li>" +
+                "<li>Ajay Singh</li>" +
+                "<li>Nisha Jain</li>" +
+                "</ul>" +
+                "<p>We're here to make your experience delightful. Feel free to explore and share kindness with our community. If you have any questions, reach out to us. Cheers to a journey filled with positivity and warmth! 🚀</p>" +
+                "</body></html>");
 
     }
 
