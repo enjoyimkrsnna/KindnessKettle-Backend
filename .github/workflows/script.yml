@@ -30,9 +30,9 @@ jobs:
 
       - name: Build and Deploy
         run: |
-          cd /home/ec2-user/your-project-directory  # replace with your actual project directory
+          cd "${{ github.workspace }}"  # Use the repository root as the project directory
           mvn clean package
-          scp -i /path/to/imkrsnakey.pem target/bddAtcProject-0.0.1-SNAPSHOT.jar ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/
+          scp -i "${{ secrets.EC2_SSH_PRIVATE_KEY }}" target/bddAtcProject-0.0.1-SNAPSHOT.jar ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/
 
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@master
