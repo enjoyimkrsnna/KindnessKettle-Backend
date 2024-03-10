@@ -22,6 +22,9 @@ jobs:
       - name: Build with Maven
         run: mvn clean package
 
+      - name: Display contents of the target directory
+        run: ls -la target
+
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v2
         with:
@@ -51,12 +54,12 @@ jobs:
         run: ssh-keyscan -H 18.200.248.149 >> ~/.ssh/known_hosts
 
       - name: Display contents of the target directory
-        run: ls -la target
+        run: ls -la $GITHUB_WORKSPACE/target
 
       - name: Deploy to EC2
         run: |
           echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
           chmod 600 deploy_key.pem
 
-          scp -i deploy_key.pem "target/bddAtcProject-0.0.1-SNAPSHOT.jar" ec2-user@18.200.248.149:/home/ec2-user
+          scp -i deploy_key.pem "$GITHUB_WORKSPACE/target/bddAtcProject-0.0.1-SNAPSHOT.jar" ec2-user@18.200.248.149:/home/ec2-user
           ssh -i deploy_key.pem ec2-user@18.200.248.149 "nohup java -jar /home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &"
