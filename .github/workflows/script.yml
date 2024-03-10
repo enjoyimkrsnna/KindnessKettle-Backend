@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: bddAtcProject-0.0.1-SNAPSHOT
-          path: target/bddAtcProject-0.0.1-SNAPSHOT.jar
+          path: target
 
   deploy_and_run:
     needs: build
@@ -85,9 +85,7 @@ jobs:
       - name: Check JAR file on EC2
         run: |
           echo "Checking if JAR file exists on EC2..."
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
-          scp -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar ./
+          ssh -o StrictHostKeyChecking=no -i <(echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}") ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "test -e /home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar"
 
       - name: Run Spring Boot on EC2
         uses: appleboy/ssh-action@master
