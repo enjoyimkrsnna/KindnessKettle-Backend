@@ -3,14 +3,13 @@ package com.kindnesskattle.bddAtcProject.Controller;
 
 import com.kindnesskattle.bddAtcProject.DTO.LikesSummaryDTO;
 import com.kindnesskattle.bddAtcProject.Services.FetchLikesService;
-import com.kindnesskattle.bddAtcProject.Services.LikesService;
+import com.kindnesskattle.bddAtcProject.Services.GetLikesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 @RestController
@@ -19,11 +18,11 @@ import java.util.concurrent.ExecutionException;
 public class Controller {
 
     @Autowired
-    private final LikesService likesService;
+    private final GetLikesService getLikesService;
     private final FetchLikesService fetchLikesService;
 
-    public Controller(LikesService likesService,FetchLikesService fetchLikesService) {
-        this.likesService = likesService;
+    public Controller(GetLikesService getLikesService, FetchLikesService fetchLikesService) {
+        this.getLikesService = getLikesService;
         this.fetchLikesService = fetchLikesService;
     }
 
@@ -40,7 +39,7 @@ public class Controller {
         try {
 
             log.info("Log message :- userID= "+userId +"PostID = "+ postId);
-            likesService.addLike(userId, postId);
+            getLikesService.addLike(userId, postId);
 
             return ResponseEntity.ok("Like added successfully.");
 

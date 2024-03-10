@@ -14,20 +14,25 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class LikesService {
+public class GetLikesService {
 
     private final LikesRepository likesRepository;
     private final UserAccountRepository userAccountRepository;
     private final DonationPostRepository donationPostRepository;
 
     @Autowired
-    public LikesService(LikesRepository likesRepository, UserAccountRepository userAccountRepository, DonationPostRepository donationPostRepository) {
+    public GetLikesService(LikesRepository likesRepository, UserAccountRepository userAccountRepository, DonationPostRepository donationPostRepository) {
         this.likesRepository = likesRepository;
         this.userAccountRepository = userAccountRepository;
         this.donationPostRepository = donationPostRepository;
     }
 
     public void addLike(Long userId, Long postId) {
+        // Null checks for userId and postId
+        if (userId == null || postId == null) {
+            log.warn("User ID or Post ID is null. Skipping like operation.");
+            return;
+        }
 
         UserAccount user = userAccountRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -35,7 +40,13 @@ public class LikesService {
         DonationPost post = donationPostRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Donation post not found"));
 
-        log.info("Log message :- username = "+user +"post id = "+ postId);
+        // Null checks for username and post ID
+        if (user.getUsername() == null || post.getPostId() == null) {
+            log.warn("Username or post ID is null. Skipping like operation.");
+            return;
+        }
+
+        log.info("Log message: username = " + user.getUsername() + ", post id = " + post.getPostId());
 
         Optional<Likes> existingLike = likesRepository.findByUserAndPost(user, post);
         if (existingLike.isPresent()) {
@@ -49,5 +60,6 @@ public class LikesService {
 
         likesRepository.save(like);
     }
-}
 
+
+}
