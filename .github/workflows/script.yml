@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build_deploy_and_run:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,6 +29,11 @@ jobs:
           cd "${{ github.workspace }}"  # Use the repository root as the project directory
           mvn clean package
 
+  deploy_and_run:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Remove previous JAR on EC2
         uses: appleboy/ssh-action@master
         with:
