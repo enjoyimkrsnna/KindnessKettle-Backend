@@ -1,4 +1,4 @@
-name: Build and Deploy to EC2
+name: Build, Deploy, and Run on EC2
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build_and_deploy:
+  build_deploy_and_run:
     runs-on: ubuntu-latest
 
     steps:
@@ -48,7 +48,22 @@ jobs:
           source: 'target/bddAtcProject-0.0.1-SNAPSHOT.jar'
           target: '/home/ec2-user/'
 
-      - name: SSH into EC2 and deploy
+      - name: Debug - List files on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ec2-user/
+            ls -l
+
+      - name: Check JAR file on EC2
+        run: |
+          echo "Checking if JAR file exists on EC2..."
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "ls /home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar"
+
+      - name: Run Spring Boot on EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
