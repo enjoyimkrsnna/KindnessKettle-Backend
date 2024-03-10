@@ -1,6 +1,5 @@
 package com.kindnesskattle.bddAtcProject.Entities;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,14 +16,12 @@ public class Address {
     @Column(name = "address_line", nullable = false)
     private String addressLine;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id", nullable = false)
-    private City city;
+    @Column(name = "pincode", nullable = false) // Add pincode field
+    private String pincode;
 
     @Column(name = "longitude")
     private Double longitude;
 
     @Column(name = "latitude")
     private Double latitude;
-
 }
