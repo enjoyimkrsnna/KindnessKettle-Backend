@@ -71,5 +71,5 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ec2-user/
+            cd /home/ec2-user/target
             nohup java -jar bddAtcProject-0.0.1-SNAPSHOT.jar > output.log 2>&1 &
