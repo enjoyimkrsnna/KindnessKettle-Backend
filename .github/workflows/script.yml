@@ -6,8 +6,11 @@ on:
       - main
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
+
+    outputs:
+      stepsOutput: ${{ steps.maven-version.outputs.maven-version }}
 
     steps:
       - name: Checkout code
@@ -20,12 +23,22 @@ jobs:
           java-version: '21'
 
       - name: Install Maven
+        id: maven-version
         run: |
           sudo apt-get update
           sudo apt-get install -y maven
+          echo "maven-version=$(mvn -v | sed -n 's/.*Maven \([0-9.]*\).*/\1/p')" >> $GITHUB_ENV
 
-      - name: Build
-        run: mvn clean package
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build without tests
+        run: mvn clean package -DskipTests
 
       - name: Upload JAR as artifact
         uses: actions/upload-artifact@v2
@@ -34,23 +47,12 @@ jobs:
           path: target/bddAtcProject-0.0.1-SNAPSHOT.jar
 
   test:
-    needs: build
+    needs: setup
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '21'
-
-      - name: Install Maven
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y maven
 
       - name: Run Tests
         run: mvn test
