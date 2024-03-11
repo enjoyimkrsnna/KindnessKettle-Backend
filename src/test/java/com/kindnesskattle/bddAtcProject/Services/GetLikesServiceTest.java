@@ -73,7 +73,7 @@ class GetLikesServiceTest {
         verifyNoMoreInteractions(userAccountRepository);
 
         // Assert the exception message
-        String expectedMessage = "User not found";
+        String expectedMessage = "User not found errrrrr!";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
