@@ -1,34 +1,37 @@
 package com.kindnesskattle.bddAtcProject.Services;
 
+import com.kindnesskattle.bddAtcProject.DTO.LikesSummaryDTO;
 import com.kindnesskattle.bddAtcProject.Entities.DonationPost;
 import com.kindnesskattle.bddAtcProject.Entities.Likes;
 import com.kindnesskattle.bddAtcProject.Entities.UserAccount;
 import com.kindnesskattle.bddAtcProject.Repository.DonationPostRepository;
 import com.kindnesskattle.bddAtcProject.Repository.LikesRepository;
 import com.kindnesskattle.bddAtcProject.Repository.UserAccountRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class GetLikesService {
+public class LikesService {
 
     private final LikesRepository likesRepository;
     private final UserAccountRepository userAccountRepository;
     private final DonationPostRepository donationPostRepository;
 
     @Autowired
-    public GetLikesService(LikesRepository likesRepository, UserAccountRepository userAccountRepository, DonationPostRepository donationPostRepository) {
+    public LikesService(LikesRepository likesRepository, UserAccountRepository userAccountRepository, DonationPostRepository donationPostRepository) {
         this.likesRepository = likesRepository;
         this.userAccountRepository = userAccountRepository;
         this.donationPostRepository = donationPostRepository;
     }
 
     public void addLike(Long userId, Long postId) {
-        // Null checks for userId and postId
         if (userId == null || postId == null) {
             log.warn("User ID or Post ID is null. Skipping like operation.");
             return;
@@ -40,7 +43,6 @@ public class GetLikesService {
         DonationPost post = donationPostRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Donation post not found"));
 
-        // Null checks for username and post ID
         if (user.getUsername() == null || post.getPostId() == null) {
             log.warn("Username or post ID is null. Skipping like operation.");
             return;
@@ -61,5 +63,16 @@ public class GetLikesService {
         likesRepository.save(like);
     }
 
+    public List<LikesSummaryDTO> getLikesSummaryByPostId(Long postId) {
+        List<Likes> likesList = likesRepository.findAllByPost_PostId(postId);
 
+        return likesList.stream()
+                .map(this::createLikesSummaryDTO)
+                .collect(Collectors.toList());
+    }
+
+    private LikesSummaryDTO createLikesSummaryDTO(Likes likes) {
+        Long postId = likes.getPost().getPostId();
+        return new LikesSummaryDTO(likes.getUser(), postId);
+    }
 }
