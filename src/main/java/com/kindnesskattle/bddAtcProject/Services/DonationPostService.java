@@ -2,7 +2,6 @@ package com.kindnesskattle.bddAtcProject.Services;
 
 
 
-import com.kindnesskattle.bddAtcProject.Entities.DonationPost;
 import com.kindnesskattle.bddAtcProject.Repository.DonationPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
