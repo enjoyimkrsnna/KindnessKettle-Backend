@@ -55,7 +55,7 @@ jobs:
       - name: Run Tests
         run: mvn test
 
-  deploy_and_Run_app:
+  deploy_and_upload_to_s3:
     needs: test
     runs-on: ubuntu-latest
 
@@ -79,9 +79,38 @@ jobs:
             fi
             rm -f /home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar
 
-            # Start Spring Boot application
-            cd /home/ec2-user/target
+      - name: Copy JAR to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          source: 'target/bddAtcProject-0.0.1-SNAPSHOT.jar'
+          target: '/home/ec2-user/'
+
+      - name: Run Spring Boot on EC2
+        id: run-application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ec2-user
             nohup java -jar bddAtcProject-0.0.1-SNAPSHOT.jar > output.log 2>&1 &
 
-            # Upload artifact to S3
-            aws s3 cp bddAtcProject-0.0.1-SNAPSHOT.jar s3://unique-kindnesskettle-image/Artifacts/
+            # Wait for the application to start
+            sleep 30
+
+            # Check if application is running
+            if pgrep -f 'java -jar bddAtcProject-0.0.1-SNAPSHOT.jar' >/dev/null; then
+              echo "Application started successfully."
+              exit 0
+            else
+              echo "Application failed to start."
+              exit 1
+            fi
+
+      - name: Upload artifact to S3
+        if: steps.run-application.outcome == 'success'
+        run: aws s3 cp /home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar s3://unique-kindnesskettle-image/Artifacts/
