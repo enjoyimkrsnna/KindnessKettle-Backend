@@ -98,5 +98,16 @@ jobs:
           script: |
             cd /home/ec2-user/target
             nohup java -jar bddAtcProject-0.0.1-SNAPSHOT.jar > output.log 2>&1 &
-            aws s3 cp /home/ec2-user/target/bddAtcProject-0.0.1-SNAPSHOT.jar s3://unique-kindnesskettle-image/Artifacts/
 
+            # Wait for the application to start
+            sleep 30
+
+            # Check if application is running
+            if pgrep -f 'java -jar bddAtcProject-0.0.1-SNAPSHOT.jar' >/dev/null; then
+              echo "Application started successfully."
+              cd /home/ec2-user/target
+              aws s3 cp bddAtcProject-0.0.1-SNAPSHOT.jar s3://unique-kindnesskettle-image/Artifacts/
+            else
+              echo "Application failed to start."
+              exit 1
+            fi
