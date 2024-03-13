@@ -24,7 +24,7 @@ public class Controller {
                 "<li style='font-size: 16px; color: #4285f4;'>Ajay Singh</li>" +
                 "<li style='font-size: 16px; color: #4285f4;'>Nisha Jain</li>" +
                 "</ul>" +
-                "<p style='font-size: 18px;'>We're here to make your experience delightful. Feel free to explore and share kindness with our community. If you have any questions, reach out to us. Cheers to a journey filled with positivity and warmth! checking artifact is uploaded on s3 or not 🚀</p>" +
+                "<p style='font-size: 18px;'>We're here to make your experience delightful. Feel free to explore and share kindness with our community. If you have any questions, reach out to us. Cheers to a journey filled with positivity and warmth! Let's Rock now 🚀</p>" +
                 "</body></html>");
 
     }
