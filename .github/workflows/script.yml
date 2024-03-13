@@ -1,4 +1,4 @@
-name: Build, Deploy, and Run on EC2
+name: Build, Test, Deploy, and Run on EC2
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build_and_run:
     runs-on: ubuntu-20.04
 
     steps:
