@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/kindnessKettle")
 public class DonationController {
 
     @Autowired
