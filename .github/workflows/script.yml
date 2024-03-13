@@ -105,12 +105,8 @@ jobs:
             # Check if application is running
             if pgrep -f 'java -jar bddAtcProject-0.0.1-SNAPSHOT.jar' >/dev/null; then
               echo "Application started successfully."
-              exit 0
+              aws s3 cp /home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar s3://unique-kindnesskettle-image/Artifacts/
             else
               echo "Application failed to start."
               exit 1
             fi
-
-      - name: Upload artifact to S3
-        if: steps.run-application.outcome == 'success'
-        run: aws s3 cp /home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar s3://unique-kindnesskettle-image/Artifacts/
