@@ -66,20 +66,8 @@ jobs:
           name: bddAtcProject-0.0.1-SNAPSHOT
           path: target
 
-      - name: Remove previous JAR on EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            PID=$(sudo lsof -t -i:8085)
-            if [ ! -z "$PID" ]; then
-              sudo kill -9 $PID
-            fi
-            rm -f /home/ec2-user/bddAtcProject-0.0.1-SNAPSHOT.jar
-
       - name: Copy JAR to EC2
+        id: copy-to-ec2
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -88,10 +76,8 @@ jobs:
           source: 'target/bddAtcProject-0.0.1-SNAPSHOT.jar'
           target: '/home/ec2-user/'
 
-      - name: Upload artifact to S3
-        run: aws s3 cp target/bddAtcProject-0.0.1-SNAPSHOT.jar s3://unique-kindnesskettle-image/Artifacts/
-
       - name: Run Spring Boot on EC2
+        if: steps.copy-to-ec2.outcome == 'success'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -100,3 +86,8 @@ jobs:
           script: |
             cd /home/ec2-user/target
             nohup java -jar bddAtcProject-0.0.1-SNAPSHOT.jar > output.log 2>&1 &
+
+      - name: Upload JAR to S3
+        if: steps.copy-to-ec2.outcome == 'success'
+        run: aws s3 cp target/bddAtcProject-0.0.1-SNAPSHOT.jar s3://unique-kindnesskettle-image/Artifacts/
+
