@@ -1,6 +1,5 @@
-
 server:
-  port : 8085
+  port: 8085
 
 spring:
   datasource:
@@ -8,6 +7,17 @@ spring:
     username: admin
     password: imkrsnna
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: singhkri727@gmail.com
+    password: sjzqmbaemwrqiyat
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 cloud:
   aws:
@@ -16,8 +26,9 @@ cloud:
       secret-key: YebhVGSuMDBKAnXNCQkVD3wGA8tQ0n9bl6Ds1fzS
     region:
       static: us-east-1
-    stack:
-      auto: false
+  stack:
+    auto: false
+
 application:
   bucket:
     name: testingabcde

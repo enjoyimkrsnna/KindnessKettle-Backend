@@ -13,9 +13,9 @@ public class City {
     @Column(name = "city_id")
     private Long cityId;
 
-    @ManyToOne
-    @JoinColumn(name = "state_id", nullable = false)
-    private State state;
+//    @ManyToOne
+//    @JoinColumn(name = "state_id", nullable = false)
+//    private State state;
 
     @Column(name = "city_name", nullable = false)
     private String cityName;
