@@ -1,0 +1,40 @@
+@startuml
+title Get Comment By PostID
+
+actor User
+box "Controller" 
+participant CommentsController
+end box 
+box "Google OAuth 2.0"
+participant "Google OAuth 2.0" as OAuth
+end box
+box "Service Layer"
+participant CommentServiceImpl
+end box
+box "Data Layer"
+participant CommentRepository
+
+end box
+database "Database" as DB
+User -> OAuth: Authenticate
+activate OAuth
+OAuth --> User: Authentication Token
+deactivate OAuth
+
+User -> CommentsController: /getComment/{id}
+activate CommentsController
+CommentsController -> CommentServiceImpl: getComment(id)
+activate CommentServiceImpl
+CommentServiceImpl -> CommentRepository: findCommentsByPostId(postId)
+activate CommentRepository
+CommentRepository -> DB: Query
+activate DB
+DB --> CommentRepository: Result
+deactivate DB
+CommentRepository --> CommentServiceImpl:<b> Response
+deactivate CommentRepository
+CommentServiceImpl --> CommentsController: <b> Response
+deactivate CommentServiceImpl
+CommentsController --> User: <b>Comments
+deactivate CommentsController
+@enduml

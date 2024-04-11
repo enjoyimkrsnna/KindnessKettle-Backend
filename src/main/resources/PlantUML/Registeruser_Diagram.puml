@@ -1,0 +1,96 @@
+@startuml
+
+title Register User Sequence Diagram
+
+actor User
+
+  box "Controller" 
+    participant "RegistrationController" as Controller
+  end box
+box "Google OAuth" 
+    participant "Google OAuth 2.0" as OAuth
+  end box
+box "Authorization Server"
+participant Google
+end box
+  box "Service" 
+    participant "RegisterUserServiceImpl" as Service
+  end box
+  box "Repository" 
+    participant "RegisterUserRepository" as Repository
+  end box
+
+database Database
+
+
+User -> Controller: Navigate to Your Application
+activate Controller
+Controller -> User: Display login options
+User -> Controller: Choose to login with Google
+Controller -> OAuth: Initiate OAuth flow
+activate OAuth
+OAuth -> User: Redirect to Google login page
+User -> OAuth: Enter Google credentials
+OAuth -> Google: Send authorization request
+activate Google
+Google --> OAuth: Authorization response
+deactivate Google
+OAuth --> Controller: Receive authorization code
+deactivate OAuth
+Controller -> OAuth: Exchange authorization code for access token
+activate OAuth
+OAuth --> Controller: Access token
+deactivate OAuth
+Controller -> Service: user(principal)
+activate Service
+activate Controller
+Service -> Repository: mapOAuth2UserToDTO(principal)
+
+activate Repository
+
+
+User -> OAuth: Authenticate using OAuth 2.0
+OAuth -> User: Authentication token
+User -> Controller: GET /RegisterUser with token
+
+
+group #lightgreen try 
+    Repository -> Database: insertUser(userDetails)
+    activate Database
+note left 
+<b>UserDto
+fname
+lname
+email
+image_url
+username
+end note
+    Database --> Repository: Response
+    deactivate Database
+alt #technology Response is OK 
+ Repository --> Service: Success
+    deactivate Repository
+    Service --> Controller: http_Status_OK(200)
+    deactivate Service
+Controller --> User: homepage http_Status_OK(200)
+    deactivate Controller
+
+else  #lightpink Response is not OK
+ Repository --> Service: Failure
+    deactivate Repository
+    Service --> Controller: http_Status_Bad_Request(400)
+    deactivate Service
+    Controller --> User: Failure Message http_Status_Bad_Request(400)
+    deactivate Controller
+end
+   
+else #lightpink Catch
+   Repository --> Service: Failure
+    deactivate Repository
+    Service --> Controller: http_Status_Bad_Request(400)
+    deactivate Service
+    Controller --> User: Failure Message http_Status_Bad_Request(400)
+    deactivate Controller
+end
+
+@enduml
