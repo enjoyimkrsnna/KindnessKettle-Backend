@@ -1,0 +1,65 @@
+@startuml
+actor User
+title User Analytics Sequence Diagram
+box "Google Oauth"
+participant "Google OAuth 2.0" as OAuth
+end box
+
+box "Controller"
+participant "UserAnalyticsController" as Controller
+end box
+box "Service"
+participant "UserAnalyticsService" as Service
+end box
+box "Repository"
+participant "UserAnalyticsRepository" as Repository
+end box
+database Database
+
+
+User -> OAuth: Authenticate using Google OAuth 2.0
+activate OAuth
+OAuth -> User: Authentication token
+deactivate OAuth
+User -> Controller:  GET /useranalytics/{userid}
+activate Controller
+note left
+Token
+userid
+end note
+Controller -> Service: userAnalytics()
+activate Service
+note left 
+<b>params
+UserId
+end note
+Service -> Repository: getUserAnalytics(postId)
+activate Repository
+Repository -> Database: SELECT * FROM UserAnalyticsView WHERE user_id = :user_id
+activate Database
+Database --> Repository: Query Result
+deactivate Database
+Repository --> Service: <b> Response
+deactivate Repository 
+alt #technology If response found
+Service --> Controller:<b> Response
+deactivate Service 
+Controller --> User: <b> Response 
+deactivate Controller
+
+note right
+<b>Data
+Map<String, Object>
+end note
+
+else #lightpink Response is Null
+Service --> Controller:<b> Response
+
+Controller --> User: <b> Response
+note right
+<b>Data
+Not Found
+end note
+end
+
+@enduml
