@@ -20,6 +20,7 @@ public class S3UploadController {
         this.s3UploadService = s3UploadService;
     }
 
+
     @PostMapping("/uploadPhoto")
     public String uploadPhoto(@RequestParam String bucketName, @RequestParam String keyName, @RequestParam String filePath) {
         s3UploadService.uploadPhoto(bucketName, keyName, filePath);
