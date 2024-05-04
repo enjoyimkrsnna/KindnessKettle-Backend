@@ -30,21 +30,6 @@ public class DonationControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(donationController).build();
     }
 
-//    @Test
-//    public void testCreateDonationPost() throws Exception {
-//        DontationAddressDTO requestDTO = new DontationAddressDTO(
-//                1L, 2L, "Test address", "123456", 1.0, 2.0, "image.jpg", LocalDateTime.now().now());
-//
-//        DonationPost donationPost = new DonationPost();
-//
-//        when(createDonationService.createDonationPost(any())).thenReturn(donationPost);
-//
-//        mockMvc.perform(post("/donationPosts")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(asJsonString(requestDTO)))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("Donation post added successfully"));
-//    }
 
     @Test
     public void testDeleteDonationPost() throws Exception {
