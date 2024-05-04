@@ -3,10 +3,7 @@ package com.kindnesskattle.bddAtcProject.Controller;
 import com.kindnesskattle.bddAtcProject.Services.S3UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -23,7 +20,10 @@ public class S3UploadController {
 
 
     @PostMapping("/uploadPhoto")
-    public String uploadPhoto(@RequestParam String bucketName, @RequestParam String keyName, @RequestParam MultipartFile file) {
+    public String uploadPhoto(@RequestParam String bucketName, @RequestParam String keyName, @RequestPart("file") MultipartFile file) {
+        log.info("Received request to upload photo. BucketName: {}, KeyName: {}, File Name: {}, Content Type: {}, File Size: {} bytes",
+                bucketName, keyName, file.getOriginalFilename(), file.getContentType(), file.getSize());
+
         s3UploadService.uploadPhoto(bucketName, keyName, file);
         return "Photo uploaded successfully.";
     }
