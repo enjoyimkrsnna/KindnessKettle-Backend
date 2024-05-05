@@ -18,10 +18,10 @@ public class S3UploadService {
         this.s3Client = AmazonS3ClientBuilder.defaultClient();
     }
 
-    public void uploadPhotoToProfiles(MultipartFile file) {
+    public String uploadPhotoToProfiles(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String keyName = "Profiles/" + fileName;
-        uploadPhoto("unique-kindnesskettle-image", keyName, file);
+       return uploadPhoto("unique-kindnesskettle-image", keyName, file);
     }
 
 
@@ -41,13 +41,22 @@ public class S3UploadService {
         return downloadFile("unique-kindnesskettle-image", keyName);
     }
 
-    private void uploadPhoto(String bucketName, String keyName, MultipartFile file) {
+    private String uploadPhoto(String bucketName, String keyName, MultipartFile file) {
         try {
-            s3Client.putObject(new PutObjectRequest(bucketName, keyName, file.getInputStream(), new ObjectMetadata()));
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(file.getContentType());
+            s3Client.putObject(new PutObjectRequest(bucketName, keyName, file.getInputStream(), metadata));
+
+            // Construct and return the URL of the uploaded file
+            String fileUrl = s3Client.getUrl(bucketName, keyName).toString();
+            return fileUrl;
+
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
+
 
     private File downloadFile(String bucketName, String keyName) {
         File tempFile = null;

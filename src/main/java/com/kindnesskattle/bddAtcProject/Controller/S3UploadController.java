@@ -32,9 +32,15 @@ public class S3UploadController {
         log.info("Received request to upload photo to Profiles folder. File Name: {}, Content Type: {}, File Size: {} bytes",
                 fileName, file.getContentType(), file.getSize());
 
-        s3UploadService.uploadPhotoToProfiles(file);
-        return "Photo uploaded successfully to Profiles folder.";
+        String fileUrl = s3UploadService.uploadPhotoToProfiles(file);
+
+        if (fileUrl != null) {
+            return "Photo uploaded successfully to Profiles folder. URL: " + fileUrl;
+        } else {
+            return "Failed to upload photo to Profiles folder.";
+        }
     }
+
 
     @PostMapping("/uploadPhotoToFoodPost")
     public String uploadPhotoToFoodPost(@RequestPart("file") MultipartFile file) {
