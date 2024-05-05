@@ -18,12 +18,15 @@ public class S3UploadService {
         this.s3Client = AmazonS3ClientBuilder.defaultClient();
     }
 
-    public void uploadPhotoToProfiles(String fileName, MultipartFile file) {
+    public void uploadPhotoToProfiles(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
         String keyName = "Profiles/" + fileName;
         uploadPhoto("unique-kindnesskettle-image", keyName, file);
     }
 
-    public void uploadPhotoToFoodPost(String fileName, MultipartFile file) {
+
+    public void uploadPhotoToFoodPost( MultipartFile file) {
+        String fileName = file.getOriginalFilename();
         String keyName = "FoodPost/" + fileName;
         uploadPhoto("unique-kindnesskettle-image", keyName, file);
     }

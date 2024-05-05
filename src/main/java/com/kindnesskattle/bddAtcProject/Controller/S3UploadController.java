@@ -18,13 +18,26 @@ public class S3UploadController {
         this.s3UploadService = s3UploadService;
     }
 
+    @PostMapping("/uploadPhotoToProfiles")
+    public String uploadPhotoToProfiles(@RequestPart("file") MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        log.info("Received request to upload photo to Profiles folder. File Name: {}, Content Type: {}, File Size: {} bytes",
+                fileName, file.getContentType(), file.getSize());
 
-    @PostMapping("/uploadPhoto")
-    public String uploadPhoto(@RequestParam String bucketName, @RequestParam String keyName, @RequestPart("file") MultipartFile file) {
-        log.info("Received request to upload photo. BucketName: {}, KeyName: {}, File Name: {}, Content Type: {}, File Size: {} bytes",
-                bucketName, keyName, file.getOriginalFilename(), file.getContentType(), file.getSize());
-
-        s3UploadService.uploadPhoto(bucketName, keyName, file);
-        return "Photo uploaded successfully.";
+        s3UploadService.uploadPhotoToProfiles(file);
+        return "Photo uploaded successfully to Profiles folder.";
     }
+
+    @PostMapping("/uploadPhotoToFoodPost")
+    public String uploadPhotoToFoodPost(@RequestPart("file") MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        log.info("Received request to upload photo to FoodPost folder. File Name: {}, Content Type: {}, File Size: {} bytes",
+                fileName, file.getContentType(), file.getSize());
+
+        s3UploadService.uploadPhotoToFoodPost(file);
+        return "Photo uploaded successfully to FoodPost folder.";
+    }
+
+
+
 }
