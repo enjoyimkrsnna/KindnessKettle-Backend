@@ -25,10 +25,10 @@ public class S3UploadService {
     }
 
 
-    public void uploadPhotoToFoodPost( MultipartFile file) {
+    public String uploadPhotoToFoodPost( MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String keyName = "FoodPost/" + fileName;
-        uploadPhoto("unique-kindnesskettle-image", keyName, file);
+        return uploadPhoto("unique-kindnesskettle-image", keyName, file);
     }
 
     public File downloadFileFromProfiles(String fileName) {
