@@ -54,7 +54,9 @@ public class S3UploadService {
         try {
             S3Object object = s3Client.getObject(new GetObjectRequest(bucketName, keyName));
             InputStream inputStream = object.getObjectContent();
-            tempFile = File.createTempFile("temp", null);
+            String[] keyParts = keyName.split("/");
+            String fileName = keyParts[keyParts.length - 1]; // Extract the file name from the key
+            tempFile = File.createTempFile("temp", getFileExtension(fileName)); // Use the file extension from the original file
             OutputStream outputStream = new FileOutputStream(tempFile);
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -68,5 +70,15 @@ public class S3UploadService {
         }
         return tempFile;
     }
+
+    // Method to extract file extension
+    private String getFileExtension(String fileName) {
+        int lastIndexOfDot = fileName.lastIndexOf('.');
+        if (lastIndexOfDot == -1) {
+            return ""; // No file extension found
+        }
+        return fileName.substring(lastIndexOfDot);
+    }
+
 
 }
