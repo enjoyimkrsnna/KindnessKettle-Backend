@@ -21,7 +21,6 @@ public class DonationController {
 
     @Autowired
     CreateDonationService createDonationPost;
-
     @GetMapping("/checking_pin_code/{pin_code}")
     public ResponseEntity<?> pincodechecking(@PathVariable String pin_code) {
         RestTemplate restTemplate = new RestTemplate();
@@ -39,9 +38,9 @@ public class DonationController {
                 JsonNode jsonNode = objectMapper.readTree(response);
                 String status = jsonNode.get("Status").asText();
                 if ("Error".equals(status)) {
-                    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ArrayList<>());
+                    return ResponseEntity.ok(response);
                 } else {
-                    return ResponseEntity.ok("Success: " + response); // Adjust the response format as needed
+                    return ResponseEntity.ok(response); // Adjust the response format as needed
                 }
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
