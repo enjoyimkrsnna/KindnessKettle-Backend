@@ -22,12 +22,10 @@ public class DonationController {
     @Autowired
     CreateDonationService createDonationPost;
 
-
     @GetMapping("/checking_pin_code/{pin_code}")
     public ResponseEntity<?> pincodechecking(@PathVariable String pin_code) {
         RestTemplate restTemplate = new RestTemplate();
         String apiUrl = "http://www.postalpincode.in/api/pincode/" + pin_code;
-
         String response;
         try {
             response = restTemplate.getForObject(apiUrl, String.class);
@@ -35,25 +33,20 @@ public class DonationController {
         } catch (HttpClientErrorException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while calling the external API");
         }
-
         if (response != null && !response.isEmpty()) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(response);
                 String status = jsonNode.get("Status").asText();
-
                 if ("Error".equals(status)) {
                     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ArrayList<>());
-
                 } else {
-
                     return ResponseEntity.ok("Success: " + response); // Adjust the response format as needed
                 }
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         } else {
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Empty response from the external API");
         }
     }
