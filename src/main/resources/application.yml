@@ -22,7 +22,7 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: AKIATXL6BE63ETRISNCI
+      access-key: AROA3HTJFHDIXS2OXA3BL:Ajay.Singh@bbd.co.za
       secret-key: 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
     region:
       static: us-east-1
