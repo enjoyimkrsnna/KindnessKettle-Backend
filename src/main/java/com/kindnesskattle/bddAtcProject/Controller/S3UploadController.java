@@ -35,7 +35,7 @@ public class S3UploadController {
         String fileUrl = s3UploadService.uploadPhotoToProfiles(file);
 
         if (fileUrl != null) {
-            return "Photo uploaded successfully to Profiles folder. URL: " + fileUrl;
+            return  fileUrl;
         } else {
             return "Failed to upload photo to Profiles folder.";
         }
@@ -51,7 +51,7 @@ public class S3UploadController {
         String fileUrl = s3UploadService.uploadPhotoToFoodPost(file);
 
         if (fileUrl != null) {
-            return "Photo uploaded successfully to Profiles folder. URL: " + fileUrl;
+            return  fileUrl;
         } else {
             return "Failed to upload photo to Profiles folder.";
         }
