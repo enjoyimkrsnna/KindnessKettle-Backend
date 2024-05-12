@@ -71,4 +71,6 @@ public class UserAnalyticsService {
         LocalDateTime lastWeek = now.minusWeeks(1);
         return (int) likes.stream().filter(like -> like.getLikeDateTime().isAfter(lastWeek)).count();
     }
+
+
 }
