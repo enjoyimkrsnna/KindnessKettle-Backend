@@ -1,20 +1,26 @@
 package com.kindnesskattle.bddAtcProject.Controller;
 
 import com.kindnesskattle.bddAtcProject.DTO.UserAnalyticsDTO;
+import com.kindnesskattle.bddAtcProject.DTO.UserDto;
+import com.kindnesskattle.bddAtcProject.Entities.UserAccount;
+import com.kindnesskattle.bddAtcProject.Repository.UserAccountRepository;
 import com.kindnesskattle.bddAtcProject.Services.UserAnalyticsService;
+import com.kindnesskattle.bddAtcProject.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/kindnesskettle/useranalytics")
 public class UserAnalyticsController {
 
+
+    @Autowired
+    public UserService userService;
+
     private final UserAnalyticsService userAnalyticsService;
+
 
     @Autowired
     public UserAnalyticsController(UserAnalyticsService userAnalyticsService) {
@@ -29,6 +35,16 @@ public class UserAnalyticsController {
             return new ResponseEntity<>(userAnalyticsDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody UserDto userDto) {
+        UserAccount registeredUser = userService.registerUser(userDto);
+        if (registeredUser != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user");
         }
     }
 }
