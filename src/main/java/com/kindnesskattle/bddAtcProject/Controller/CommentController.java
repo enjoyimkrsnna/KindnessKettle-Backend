@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 
 @RestController
 public class CommentController {
@@ -22,6 +25,11 @@ public class CommentController {
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
+    @GetMapping("/getComment/{id}")
+    public List<Map<String,Object>> getCommentById(@PathVariable Long id)
+    {
+        return commentService.getComment(id);
+    }
 
     @DeleteMapping("/delete_comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable("commentId") Long commentId) {

@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class CommentService {
 
@@ -24,6 +27,10 @@ public class CommentService {
     @Autowired
     DonationPostRepository donationPostRepository;
     public Comment addComment(long userId, long postId, String commentContent) {
+        System.out.println(userId);
+        System.out.println(postId);
+        System.out.println(commentContent);
+
         UserAccount user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
 
@@ -38,6 +45,10 @@ public class CommentService {
 //        comment.setCommentDateTime(new Date());
 
         return commentRepository.save(comment);
+    }
+
+    public List<Map<String,Object>> getComment(Long postId){
+        return commentRepository.findCommentsByPostId(postId);
     }
 
 
