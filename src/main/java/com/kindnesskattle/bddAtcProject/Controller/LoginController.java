@@ -1,5 +1,6 @@
 package com.kindnesskattle.bddAtcProject.Controller;
 
+import com.kindnesskattle.bddAtcProject.DTO.AuthResponse;
 import com.kindnesskattle.bddAtcProject.Entities.UserAccount;
 import com.kindnesskattle.bddAtcProject.Services.UserService;
 import io.jsonwebtoken.Jwts;
@@ -21,7 +22,7 @@ public class LoginController {
     }
 
     @PostMapping("/auth")
-    public String generateToken(@RequestBody String email) {
+    public AuthResponse generateToken(@RequestBody String email) {
         String emailexract = email.split(":")[1].replaceAll("[^a-zA-Z0-9@.]", "").replaceAll("}", "");
         System.out.println("calling the generate token method with email "+ emailexract);
         // Calculate token expiration time
@@ -41,6 +42,10 @@ public class LoginController {
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
-        return token;
+
+        AuthResponse response = new AuthResponse();
+        response.setToken(token);
+        response.setUserAccount(user_id);
+        return response;
     }
 }
