@@ -75,4 +75,17 @@ public class LikesService {
         Long postId = likes.getPost().getPostId();
         return new LikesSummaryDTO(likes.getUser(), postId);
     }
+
+    public void deleteLike(Long userId, Long postId) {
+        UserAccount user = userAccountRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        DonationPost post = donationPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        Likes likeToDelete = likesRepository.findByUserAndPost(user, post)
+                .orElseThrow(() -> new RuntimeException("Like not found"));
+
+        likesRepository.delete(likeToDelete);
+    }
 }

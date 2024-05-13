@@ -48,4 +48,10 @@ public class LikeController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteLike(@RequestParam Long userId, @RequestParam Long postId) {
+        likesService.deleteLike(userId, postId);
+        return ResponseEntity.ok("Like deleted successfully.");
+    }
 }
