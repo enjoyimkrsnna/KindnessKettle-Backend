@@ -14,7 +14,7 @@ public class FilterConfig {
         // Exclude the endpoint for generating token from token verification
         registrationBean.addUrlPatterns("/*");
         registrationBean.addUrlPatterns("/login/auth"); // Exclude this endpoint
-        registrationBean.addUrlPatterns("/test-cors");
+        registrationBean.addUrlPatterns("/register");
         registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registrationBean;
     }

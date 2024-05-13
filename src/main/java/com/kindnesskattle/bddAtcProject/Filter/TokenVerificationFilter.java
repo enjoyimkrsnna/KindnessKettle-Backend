@@ -31,7 +31,7 @@ public class TokenVerificationFilter extends GenericFilterBean {
         }
 
         // Allow requests to the /login/auth endpoint to bypass token verification
-        if ((httpRequest.getRequestURI().equals("/login/auth") && httpRequest.getMethod().equals("POST")) || httpRequest.getRequestURI().equals("/test-cors") ) {
+        if ((httpRequest.getRequestURI().equals("/login/auth") && httpRequest.getMethod().equals("POST")) || httpRequest.getRequestURI().equals("/register") ) {
             chain.doFilter(request, response);
             return;
         }
