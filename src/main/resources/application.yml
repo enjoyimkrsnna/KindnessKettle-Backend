@@ -1,5 +1,9 @@
 server:
   port: 8085
+  ssl:
+    key-store: classpath:ssl/keystore.p12
+    key-store-password: imkrsnna
+    key-store-type: PKCS12
 
 spring:
   datasource:
