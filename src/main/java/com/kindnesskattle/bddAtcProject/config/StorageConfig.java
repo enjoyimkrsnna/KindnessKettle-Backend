@@ -9,32 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@Configuration
-//public class AmazonS3Config {
-
-//    @Value("${aws.accessKey}")
-//    private String accessKey;
-//
-//    @Value("${aws.secretKey}")
-//    private String secretKey;
-//
-//    @Value("${aws.s3.region}")
-//    private String region;
-//
-//    @Value("${aws.s3.endpoint}")
-//    private String endpoint;
-//
-//    @Bean
-//    public AmazonS3 amazonS3Client() {
-//        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-//        return AmazonS3ClientBuilder.standard()
-//                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-//                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
-//                .withPathStyleAccessEnabled(true)
-//                .withClientConfiguration(new com.amazonaws.ClientConfiguration().withProtocol(Protocol.HTTP))
-//                .build();
-//    }
-
 
 @Configuration
 public class StorageConfig {
