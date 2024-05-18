@@ -141,4 +141,57 @@ public class CreateDonationService {
         return donationPostsDetails;
     }
 
+    @Transactional
+    public DonationPost updateDonationPost(Long postId, DontationAddressDTO request) {
+        try {
+            DonationPost donationPost = donationPostRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("Donation post not found"));
+
+            if (request.getAddressLine() != null && !request.getAddressLine().isEmpty()) {
+                donationPost.getAddress().setAddressLine(request.getAddressLine());
+            }
+            if (request.getPincode() != null && !request.getPincode().isEmpty()) {
+                donationPost.getAddress().setPincode(request.getPincode());
+            }
+            if (request.getLatitude() != 0) {
+                donationPost.getAddress().setLatitude(request.getLatitude());
+            }
+            if (request.getLongitude() != 0) {
+                donationPost.getAddress().setLongitude(request.getLongitude());
+            }
+            if (request.getFoodImageUrl() != null && !request.getFoodImageUrl().isEmpty()) {
+                donationPost.setFoodImageUrl(request.getFoodImageUrl());
+            }
+            if (request.getTimeAvailable() != null) {
+                donationPost.setTimeAvailable(request.getTimeAvailable());
+            }
+            if (request.getFoodTypeId() != null) {
+                FoodType foodType = foodTypeRepository.findById(request.getFoodTypeId())
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid food type ID"));
+                donationPost.setFoodType(foodType);
+            }
+
+            return donationPostRepository.save(donationPost);
+        } catch (Exception e) {
+            log.error("An unexpected error occurred while updating the donation post", e);
+            throw new RuntimeException("Invalid input data");
+        }
+    }
+
+    @Transactional
+    public DonationPost updateDonationPostStatus(Long postId, boolean isPicked) {
+        try {
+            DonationPost donationPost = donationPostRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("Donation post not found"));
+
+            donationPost.setIsPickupCompleted(isPicked);
+
+            return donationPostRepository.save(donationPost);
+        } catch (Exception e) {
+            log.error("An unexpected error occurred while updating the donation post status", e);
+            throw new RuntimeException("Invalid input data");
+        }
+    }
+
+
 }
