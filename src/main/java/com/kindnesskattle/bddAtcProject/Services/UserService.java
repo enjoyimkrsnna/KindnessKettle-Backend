@@ -12,6 +12,9 @@ public class UserService {
     @Autowired
     private UserAccountRepository userAccountRepository;
 
+    @Autowired
+    private S3UploadService s3UploadService;
+
     public UserAccount getUserByEmail(String emailAddress) {
         return userAccountRepository.findByEmailAddress(emailAddress);
     }
@@ -31,6 +34,20 @@ public class UserService {
         return userAccountRepository.save(userAccount);
 
 
+    }
+
+    public UserAccount updateUserProfile(String emailAddress, UserDto updatedUserDto) {
+        UserAccount user = userAccountRepository.findByEmailAddress(emailAddress);
+        if (user != null) {
+            user.setFirstName(updatedUserDto.getFirstName());
+            user.setLastName(updatedUserDto.getLastName());
+            user.setImageUrl(updatedUserDto.getImageUrl());
+            user.setUsername(updatedUserDto.getUsername());
+            user.setProfileDescription(updatedUserDto.getProfileDescription());
+            user.setIsActive(updatedUserDto.isIs_active());
+            return userAccountRepository.save(user);
+        }
+        return null;
     }
 
 }

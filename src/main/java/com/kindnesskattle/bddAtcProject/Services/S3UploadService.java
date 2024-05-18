@@ -7,6 +7,8 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 import java.io.*;
 
 @Service
@@ -19,21 +21,27 @@ public class S3UploadService {
     }
 
     public String uploadPhotoToProfiles(MultipartFile file) {
-        String fileName = file.getOriginalFilename();
-        String keyName = "Profiles/" + fileName;
+        String uniqueFileName = generateUniqueFileName(file.getOriginalFilename());
+        String keyName = "Profiles/" + uniqueFileName;
        return uploadPhoto("unique-kindnesskettle-image", keyName, file);
     }
 
 
     public String uploadPhotoToFoodPost( MultipartFile file) {
-        String fileName = file.getOriginalFilename();
-        String keyName = "FoodPost/" + fileName;
+        String uniqueFileName = generateUniqueFileName(file.getOriginalFilename());
+        String keyName = "FoodPost/" + uniqueFileName;
         return uploadPhoto("unique-kindnesskettle-image", keyName, file);
     }
 
     public File downloadFileFromProfiles(String fileName) {
         String keyName = "Profiles/" + fileName;
         return downloadFile("unique-kindnesskettle-image", keyName);
+    }
+
+    private String generateUniqueFileName(String originalFileName) {
+        String fileExtension = getFileExtension(originalFileName);
+        String uniqueID = UUID.randomUUID().toString();
+        return uniqueID + "." + fileExtension;
     }
 
     public File downloadFileFromFoodPost(String fileName) {
