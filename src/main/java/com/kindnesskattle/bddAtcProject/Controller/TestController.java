@@ -22,9 +22,9 @@ public class TestController {
 
         UserAccount registeredUser = userService.registerUser(userDto);
         if (registeredUser != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body("{\"success\": true, \"message\": \"User registered successfully\"}");
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"success\": false, \"message\": \"Failed to register user\"}");
         }
     }
 }
