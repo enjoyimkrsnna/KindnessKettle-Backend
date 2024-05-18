@@ -38,7 +38,12 @@ public class DonationPost {
     @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
+    @Transient
+    private boolean isActive;
 
+    public boolean isActive() {
+        return !isPickupCompleted && LocalDateTime.now().isBefore(timeAvailable);
+    }
 
 }
 
