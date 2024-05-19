@@ -19,6 +19,15 @@ public class UserService {
         return userAccountRepository.findByEmailAddress(emailAddress);
     }
 
+    public boolean emailExists(String email) {
+        return userAccountRepository.findByEmailAddress(email) != null;
+    }
+
+    public boolean usernameExists(String username) {
+        return userAccountRepository.findByUsername(username) != null;
+    }
+
+
     public UserAccount registerUser(UserDto userDto) {
         // You can perform any additional validation or business logic here before saving the user
                 UserAccount userAccount = new UserAccount();

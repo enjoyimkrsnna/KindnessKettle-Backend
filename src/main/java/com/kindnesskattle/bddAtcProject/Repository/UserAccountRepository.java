@@ -15,6 +15,10 @@ import java.util.List;
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
     UserAccount findByEmailAddress(String emailAddress);
 
+
+
+    UserAccount findByUsername(String username);
+
     @Procedure(name = "insert_User")
     UserDto insertUser(
             @Param("first_name") String first_name,

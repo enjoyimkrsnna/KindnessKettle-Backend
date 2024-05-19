@@ -59,6 +59,20 @@ public class TestController {
 
 
         try {
+
+            // Check if email already exists
+            if (userService.emailExists(email)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("{\"success\": false, \"message\": \"Email address already exists\"}");
+            }
+
+            // Check if username already exists
+            if (userService.usernameExists(username)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("{\"success\": false, \"message\": \"Username already exists\"}");
+            }
+
+
             UserAccount registeredUser = userService.registerUser(userDto);
             if (registeredUser != null) {
                 return ResponseEntity.status(HttpStatus.CREATED)
