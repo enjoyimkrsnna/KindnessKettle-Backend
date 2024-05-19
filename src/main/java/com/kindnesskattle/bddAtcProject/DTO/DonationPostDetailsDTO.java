@@ -6,6 +6,5 @@ import lombok.Data;
 @Data
 public class DonationPostDetailsDTO {
     private DonationPost donationPost;
-//    private Address address;
-//    private FoodType foodType;
+
 }

@@ -24,38 +24,54 @@ public class UserController {
     @PutMapping("/update/{emailAddress}")
     public ResponseEntity<UserAccount> updateUserProfile(
             @PathVariable String emailAddress,
-            @RequestParam("firstName") String firstName,
-            @RequestParam("lastName") String lastName,
-            @RequestParam("profileDescription") String profileDescription,
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @RequestParam(value = "profileDescription", required = false) String profileDescription,
             @RequestParam(value = "profileImage", required = false) MultipartFile profileImage
     ) {
 
         System.out.println("updating profile");
+
+        // Get the existing user details
+        UserAccount user = userService.getUserByEmail(emailAddress);
+
         // Create UserDto with updated data
         UserDto updatedUserDto = new UserDto();
-        updatedUserDto.setFirstName(firstName);
-        updatedUserDto.setLastName(lastName);
-        updatedUserDto.setProfileDescription(profileDescription);
+        if (firstName != null) {
+            updatedUserDto.setFirstName(firstName);
+        } else {
+            updatedUserDto.setFirstName(user.getFirstName());
+        }
+        if (lastName != null) {
+            updatedUserDto.setLastName(lastName);
+        } else {
+            updatedUserDto.setLastName(user.getLastName());
+        }
+        if (profileDescription != null) {
+            updatedUserDto.setProfileDescription(profileDescription);
+        } else {
+            updatedUserDto.setProfileDescription(user.getProfileDescription());
+        }
 
         // Upload profile image to S3 if provided
         if (profileImage != null && !profileImage.isEmpty()) {
             String imageUrl = s3UploadService.uploadPhotoToProfiles(profileImage);
             updatedUserDto.setImageUrl(imageUrl);
+        } else {
+            // Keep the previous image URL if profile image is not provided
+            updatedUserDto.setImageUrl(user.getImageUrl());
         }
 
-        UserAccount user = userService.getUserByEmail(emailAddress);
-        if (user != null) {
-            // Exclude the username field from being updated
-            updatedUserDto.setUsername(user.getUsername());
+        // Exclude the username field from being updated
+        updatedUserDto.setUsername(user.getUsername());
 
-            UserAccount updatedUser = userService.updateUserProfile(emailAddress, updatedUserDto);
-            if (updatedUser != null) {
-                return ResponseEntity.ok(updatedUser);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+        // Update user profile
+        UserAccount updatedUser = userService.updateUserProfile(emailAddress, updatedUserDto);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 }
