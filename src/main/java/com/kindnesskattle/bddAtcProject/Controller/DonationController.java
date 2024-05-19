@@ -89,4 +89,18 @@ public class DonationController {
         return ResponseEntity.ok(donationPostsDetails);
     }
 
+    @PutMapping("/updatePost/{postId}")
+    public ResponseEntity<DonationPost> updateDonationPost(@PathVariable Long postId, @RequestBody DontationAddressDTO dontationAddressDTO) {
+        DonationPost updatedDonationPost = createDonationPost.updateDonationPost(postId, dontationAddressDTO);
+        return ResponseEntity.ok(updatedDonationPost);
+
+
+    }
+
+    @PutMapping("/updateactive/{postId}/status")
+    public ResponseEntity<DonationPost> updateDonationPostStatus(@PathVariable Long postId, @RequestParam boolean isPicked) {
+        DonationPost updatedDonationPost = createDonationPost.updateDonationPostStatus(postId, isPicked);
+        return ResponseEntity.ok(updatedDonationPost);
+    }
+
 }
