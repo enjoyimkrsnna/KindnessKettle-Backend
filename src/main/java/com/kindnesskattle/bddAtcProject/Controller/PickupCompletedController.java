@@ -6,6 +6,7 @@ import com.kindnesskattle.bddAtcProject.Entities.UserAccount;
 import com.kindnesskattle.bddAtcProject.Repository.PickupCompletedRepository;
 import com.kindnesskattle.bddAtcProject.Repository.UserAccountRepository;
 import com.kindnesskattle.bddAtcProject.Repository.DonationPostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -140,5 +141,27 @@ public class PickupCompletedController {
             return donationPost;
         }
     }
+
+    @Transactional
+    @DeleteMapping("/pickup")
+    public ResponseEntity<String> deletePickupCompleted(@RequestParam Long userId, @RequestParam Long postId) {
+        if (userId == null || postId == null) {
+            return ResponseEntity.badRequest().body("User ID and Post ID cannot be null");
+        }
+
+        // Check if the PickupCompleted record exists
+        Optional<PickupCompleted> pickupCompleted = pickupCompletedRepository.findByPickedUpByUserIdAndPostId(userId, postId);
+        if (pickupCompleted.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pickup completed record not found");
+        }
+
+        // Delete the PickupCompleted record
+        pickupCompletedRepository.deleteByPickedUpByUserIdAndPostId(userId, postId);
+
+        // Return a success response
+        return ResponseEntity.ok("Pickup completed record deleted successfully");
+    }
+
+
 
 }
