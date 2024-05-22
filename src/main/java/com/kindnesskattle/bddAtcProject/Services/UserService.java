@@ -6,6 +6,8 @@ import com.kindnesskattle.bddAtcProject.Repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -25,6 +27,10 @@ public class UserService {
 
     public boolean usernameExists(String username) {
         return userAccountRepository.findByUsername(username) != null;
+    }
+
+    public List<String> getAllUserEmails() {
+        return userAccountRepository.findAllEmails();
     }
 
 

@@ -6,6 +6,9 @@ import com.kindnesskattle.bddAtcProject.DTO.DonationPostDetailsDTO;
 import com.kindnesskattle.bddAtcProject.DTO.DontationAddressDTO;
 import com.kindnesskattle.bddAtcProject.Entities.DonationPost;
 import com.kindnesskattle.bddAtcProject.Services.CreateDonationService;
+import com.kindnesskattle.bddAtcProject.Services.MailService;
+import com.kindnesskattle.bddAtcProject.Services.UserService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -21,6 +25,12 @@ public class DonationController {
 
     @Autowired
     CreateDonationService createDonationPost;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private UserService userService;
     @GetMapping("/checking_pin_code/{pin_code}")
     public ResponseEntity<?> pincodechecking(@PathVariable String pin_code) {
         RestTemplate restTemplate = new RestTemplate();
@@ -55,6 +65,18 @@ public class DonationController {
     public ResponseEntity<String> createDonationPost(@RequestBody DontationAddressDTO request) {
         try {
             DonationPost donationPost = createDonationPost.createDonationPost(request);
+            List<String> emails = userService.getAllUserEmails();
+
+            String subject = "New Donation";
+            String body = "Dear sir/ madam testing \n Hope you are good. \n A new donation post is available on our site \n let's donate and share love\n thank you";
+            System.out.println(emails);
+            try {
+                mailService.sendEmails(emails, subject, body);
+                System.out.println("email sent successfully");
+            } catch (MessagingException e) {
+                System.out.println("failed to send mail");
+            }
+
             return ResponseEntity.ok("Donation post added successfully");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Failed to add donation post: " + e.getMessage());

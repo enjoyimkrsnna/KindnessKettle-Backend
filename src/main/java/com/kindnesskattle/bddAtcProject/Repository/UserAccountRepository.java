@@ -32,5 +32,8 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM user_accounts u WHERE u.email_address = :email", nativeQuery = true)
     public Integer existsByEmail(String email);
 
+    @Query("SELECT u.emailAddress FROM UserAccount u")
+    List<String> findAllEmails();
+
 }
 
