@@ -68,7 +68,8 @@ public class DonationController {
             List<String> emails = userService.getAllUserEmails();
 
             String subject = "New Donation";
-            String body = "Dear sir/ madam testing \n Hope you are good. \n A new donation post is available on our site \n let's donate and share love\n thank you";
+            String body = "Dear sir/ madam,<br><br>Hope you are good.<br><br>A new donation post is available on our site.<br>Let's donate and share love.<br><br>Thank you.";
+
             System.out.println(emails);
             try {
                 mailService.sendEmails(emails, subject, body);
