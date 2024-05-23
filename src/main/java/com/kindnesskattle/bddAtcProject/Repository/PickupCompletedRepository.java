@@ -15,4 +15,6 @@ public interface PickupCompletedRepository extends JpaRepository<PickupCompleted
 
     Optional<PickupCompleted> findByPickedUpByUserIdAndPostId(Long pickedUpByUserId, Long postId);
     void deleteByPickedUpByUserIdAndPostId(Long pickedUpByUserId, Long postId);
+
+    List<PickupCompleted> findByPostId(Long postId);
 }

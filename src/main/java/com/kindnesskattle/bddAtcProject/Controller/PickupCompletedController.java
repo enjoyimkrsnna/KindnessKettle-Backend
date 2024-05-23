@@ -42,7 +42,6 @@ public class PickupCompletedController {
         // Check if user exists
         Optional<UserAccount> userExists = userAccountRepository.findById(request.getPickedUpByUserId());
 
-
         // Check if post exists
         Optional<DonationPost> postExists = donationPostRepository.findById(request.getPostId());
         if (userExists.isEmpty() && postExists.isEmpty()) {
@@ -53,7 +52,6 @@ public class PickupCompletedController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found");
         }
 
-
         // Create a new PickupCompleted object
         PickupCompleted pickupCompleted = new PickupCompleted(request.getPickedUpByUserId(), request.getPostId(), LocalDateTime.now());
 
@@ -63,31 +61,6 @@ public class PickupCompletedController {
         // Return a success response
         return ResponseEntity.status(HttpStatus.CREATED).body("Pickup completed record created successfully");
     }
-
-    // Getters and Setters for Repositories
-
-    static class PickupCompletedRequest {
-        private Long pickedUpByUserId;
-        private Long postId;
-
-        // Getters and Setters
-        public Long getPickedUpByUserId() {
-            return pickedUpByUserId;
-        }
-
-        public void setPickedUpByUserId(Long pickedUpByUserId) {
-            this.pickedUpByUserId = pickedUpByUserId;
-        }
-
-        public Long getPostId() {
-            return postId;
-        }
-
-        public void setPostId(Long postId) {
-            this.postId = postId;
-        }
-    }
-
 
     @GetMapping("/getpickup/{userId}")
     public ResponseEntity<List<PickupCompletedWithDonationPostResponse>> getPickupCompletedWithDonationPostByUserId(@PathVariable Long userId) {
@@ -121,25 +94,37 @@ public class PickupCompletedController {
         return ResponseEntity.ok(responseList);
     }
 
-    // Inner class representing the response including PickupCompleted and DonationPost details
-    static class PickupCompletedWithDonationPostResponse {
-        private PickupCompleted pickupCompleted;
-        private DonationPost donationPost;
-
-        // Constructor
-        public PickupCompletedWithDonationPostResponse(PickupCompleted pickupCompleted, DonationPost donationPost) {
-            this.pickupCompleted = pickupCompleted;
-            this.donationPost = donationPost;
+    // New method to get PickupCompleted records by postId
+    @GetMapping("/getpickupbypost/{postId}")
+    public ResponseEntity<List<PickupCompletedWithUserResponse>> getPickupCompletedByPostId(@PathVariable Long postId) {
+        if (postId == null) {
+            return ResponseEntity.badRequest().build();
         }
 
-        // Getters
-        public PickupCompleted getPickupCompleted() {
-            return pickupCompleted;
+        // Retrieve pickup completed records by postId
+        List<PickupCompleted> pickupCompletedList = pickupCompletedRepository.findByPostId(postId);
+
+        // Check if records exist
+        if (pickupCompletedList.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
 
-        public DonationPost getDonationPost() {
-            return donationPost;
+        // Create a list to hold PickupCompletedWithUserResponse objects
+        List<PickupCompletedWithUserResponse> responseList = new ArrayList<>();
+
+        // Iterate over pickupCompletedList and fetch details of associated user accounts
+        for (PickupCompleted pickupCompleted : pickupCompletedList) {
+            Long userId = pickupCompleted.getPickedUpByUserId();
+            Optional<UserAccount> userAccountOptional = userAccountRepository.findById(userId);
+            userAccountOptional.ifPresent(userAccount -> {
+                // Create PickupCompletedWithUserResponse object with details of pickup completed record and associated user account
+                PickupCompletedWithUserResponse response = new PickupCompletedWithUserResponse(pickupCompleted, userAccount);
+                responseList.add(response);
+            });
         }
+
+        // Return the list of PickupCompletedWithUserResponse objects
+        return ResponseEntity.ok(responseList);
     }
 
     @Transactional
@@ -162,6 +147,68 @@ public class PickupCompletedController {
         return ResponseEntity.ok("Pickup completed record deleted successfully");
     }
 
+    // Inner class representing the request for creating a pickup completed record
+    static class PickupCompletedRequest {
+        private Long pickedUpByUserId;
+        private Long postId;
 
+        // Getters and Setters
+        public Long getPickedUpByUserId() {
+            return pickedUpByUserId;
+        }
 
+        public void setPickedUpByUserId(Long pickedUpByUserId) {
+            this.pickedUpByUserId = pickedUpByUserId;
+        }
+
+        public Long getPostId() {
+            return postId;
+        }
+
+        public void setPostId(Long postId) {
+            this.postId = postId;
+        }
+    }
+
+    // Inner class representing the response including PickupCompleted and DonationPost details
+    static class PickupCompletedWithDonationPostResponse {
+        private PickupCompleted pickupCompleted;
+        private DonationPost donationPost;
+
+        // Constructor
+        public PickupCompletedWithDonationPostResponse(PickupCompleted pickupCompleted, DonationPost donationPost) {
+            this.pickupCompleted = pickupCompleted;
+            this.donationPost = donationPost;
+        }
+
+        // Getters
+        public PickupCompleted getPickupCompleted() {
+            return pickupCompleted;
+        }
+
+        public DonationPost getDonationPost() {
+            return donationPost;
+        }
+    }
+
+    // Inner class representing the response including PickupCompleted and UserAccount details
+    static class PickupCompletedWithUserResponse {
+        private PickupCompleted pickupCompleted;
+        private UserAccount userAccount;
+
+        // Constructor
+        public PickupCompletedWithUserResponse(PickupCompleted pickupCompleted, UserAccount userAccount) {
+            this.pickupCompleted = pickupCompleted;
+            this.userAccount = userAccount;
+        }
+
+        // Getters
+        public PickupCompleted getPickupCompleted() {
+            return pickupCompleted;
+        }
+
+        public UserAccount getUserAccount() {
+            return userAccount;
+        }
+    }
 }
