@@ -65,5 +65,9 @@ public class UserService {
         return null;
     }
 
+    public String getEmailByUserId(Long userId) {
+        return userAccountRepository.findEmailById(userId);
+    }
+
 }
 

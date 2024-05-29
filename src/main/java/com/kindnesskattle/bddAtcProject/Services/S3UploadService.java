@@ -3,7 +3,6 @@ package com.kindnesskattle.bddAtcProject.Services;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,7 +87,7 @@ public class S3UploadService {
         return tempFile;
     }
 
-    // Method to extract file extension
+
     private String getFileExtension(String fileName) {
         int lastIndexOfDot = fileName.lastIndexOf('.');
         if (lastIndexOfDot == -1) {

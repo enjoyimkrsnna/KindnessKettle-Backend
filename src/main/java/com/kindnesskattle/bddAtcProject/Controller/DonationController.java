@@ -64,11 +64,26 @@ public class DonationController {
     @PostMapping("/donationPosts")
     public ResponseEntity<String> createDonationPost(@RequestBody DontationAddressDTO request) {
         try {
+             long userid = request.getUserId();
+
+            String currentemail = userService.getEmailByUserId(userid);
             DonationPost donationPost = createDonationPost.createDonationPost(request);
             List<String> emails = userService.getAllUserEmails();
 
-            String subject = "New Donation";
-            String body = "Dear sir/ madam,<br><br>Hope you are good.<br><br>A new donation post is available on our site.<br>Let's donate and share love.<br><br>Thank you.";
+            if (emails.contains(currentemail)) {
+                emails.remove(currentemail);
+            }
+
+            String subject = "New Opportunity for Giving";
+            String body = "<html><head><style>body { font-family: Arial, sans-serif; }</style></head><body>" +
+                    "<p>Dear Sir/madam,</p>" +
+                    "<p>I hope this message finds you well.</p>" +
+                    "<p style=\"font-weight: bold;\">I'm excited to share that a new donation is now available on our platform. You can explore it by clicking <a href=\"https://kindnesskettle.projects.bbdgrad.com/web/\" style=\"color: #007bff; text-decoration: none;\">here</a>.</p>" +
+                    "<p>This presents a chance for us to come together and make a difference in the lives of others. Whether it's through a small act of kindness or a larger gesture, every contribution counts.</p>" +
+                    "<p>I encourage you to explore this opportunity and consider how you can participate in spreading positivity and support.</p>" +
+                    "<p>Thank you for your ongoing support and generosity.</p>" +
+                    "<p>Best regards,<br>KindnessKettle Team</p>" +
+                    "</body></html>";
 
             System.out.println(emails);
             try {

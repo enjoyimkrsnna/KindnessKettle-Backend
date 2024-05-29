@@ -35,5 +35,8 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
     @Query("SELECT u.emailAddress FROM UserAccount u")
     List<String> findAllEmails();
 
+    @Query("SELECT u.emailAddress FROM UserAccount u WHERE u.id = :userId")
+    String findEmailById(@Param("userId") Long userId);
+
 }
 
